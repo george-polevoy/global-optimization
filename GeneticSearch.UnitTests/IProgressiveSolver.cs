@@ -35,7 +35,7 @@ namespace GeneticSearch.UnitTests
             {
                 var next = Compute(prev.Solution.Variate(sequence, diameter * temperature), cost);
 
-                if (next.Cost < prev.Cost || Math.Exp(-(next.Cost - prev.Cost)*temperature) > sequence.NextDouble())
+                if (next.Cost < prev.Cost || Math.Exp(-(next.Cost - prev.Cost)/temperature) > sequence.NextDouble())
                 {
                     yield return next;
                 }
@@ -43,6 +43,8 @@ namespace GeneticSearch.UnitTests
                 {
                     yield return prev;
                 }
+
+                temperature *= (1.0 - 0.0001);
             }
         }
 

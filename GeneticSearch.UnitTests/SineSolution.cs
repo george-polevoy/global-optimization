@@ -8,15 +8,16 @@ namespace GeneticSearch.UnitTests
     {
         private const int bands = 6;
 
-        NeuralNetwork aprox = new NeuralNetwork(bands, 1, bands);
+        private readonly NeuralNetwork network;
 
         public SineSolution()
         {
+            network = new NeuralNetwork(bands, 1, bands);
         }
 
-        public SineSolution(NeuralNetwork nn)
+        private SineSolution(NeuralNetwork network)
         {
-            aprox = nn;
+            this.network = network;
         }
 
         public double Evaluate(double arg)
@@ -25,14 +26,14 @@ namespace GeneticSearch.UnitTests
             powers.Add(arg);
             for (var i = 1; i < bands; i++)
             {
-                powers[i] = powers[i - 1]*arg;
+                powers.Add(powers[i - 1]*arg);
             }
-            return aprox.Compute(powers).First();
+            return network.Compute(powers).First();
         }
 
         public SineSolution Variate(Random r, double diameter)
         {
-            return new SineSolution(aprox.Variate(r, diameter));
+            return new SineSolution(network.Variate(r, diameter));
         }
     }
 }
