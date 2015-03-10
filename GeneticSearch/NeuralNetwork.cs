@@ -2,11 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace GeneticSearch
 {
     public class NeuralNetwork
     {
+        public override string ToString()
+        {
+            return SerializeComponents().Aggregate(new StringBuilder(), (sb,x)=>sb.Append(x).Append(";")).ToString();
+        }
+
         private List<List<Tuple<double, double>>> middleWeights;
         private List<List<Tuple<double,double>>> outputWeights;
 
@@ -27,7 +33,9 @@ namespace GeneticSearch
         public NeuralNetwork Variate(Random sequence, double diameter)
         {
             var nn = new NeuralNetwork(middleWeights[0].Count, outputWeights.Count, middleWeights.Count);
-            nn.ReadState(SerializeComponents().Select(c=>c+(sequence.NextDouble()-0.5) * diameter));
+            nn.ReadState(SerializeComponents()
+                //.Select(c=>1.0 / nn.Size() < sequence.NextDouble() ?  c: c +(sequence.NextDouble()-0.5) * diameter));
+                .Select(c => c + (sequence.NextDouble() - 0.5) * diameter));
             return nn;
         }
 
@@ -102,6 +110,7 @@ namespace GeneticSearch
                         var a = iter.Current;
                         iter.MoveNext();
                         var b = iter.Current;
+                        iter.MoveNext();
                         middleWeights[i][j] = Tuple.Create(a, b);
                     }
                 }
@@ -113,6 +122,7 @@ namespace GeneticSearch
                         var a = iter.Current;
                         iter.MoveNext();
                         var b = iter.Current;
+                        iter.MoveNext();
                         outputWeights[i][j] = Tuple.Create(a, b);
                     }
                 }

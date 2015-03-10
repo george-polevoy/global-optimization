@@ -16,10 +16,17 @@ namespace GeneticSearch.UnitTests
         public double Cost(IFunction<double, double> solution)
         {
             const int numberOfSamples = 10;
-            var cost =
-                Points.Select(p => solution.Evaluate(p.Item1) - p.Item2)
-                    .Select(d => d * d).Sum() / numberOfSamples;
-            return cost;
+            var enumerable = Points.Select(p => solution.Evaluate(p.Item1) - p.Item2);
+            var s = 0.0;
+            var thresh = 2.0 * 0.5/numberOfSamples;
+            
+            foreach (var i in enumerable)
+            {
+                s += i*i;
+                //if (s > thresh)
+                //    return s;
+            }
+            return s/numberOfSamples;
         }
     }
 }
